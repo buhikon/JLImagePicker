@@ -1,0 +1,16 @@
+PODS:
+  - JLImagePicker (0.1.0)
+
+DEPENDENCIES:
+  - JLImagePicker (from `../`)
+
+EXTERNAL SOURCES:
+  JLImagePicker:
+    :path: ../
+
+SPEC CHECKSUMS:
+  JLImagePicker: 45660a9398aedc67023f8f5f96ce5ab3bc9cc560
+
+PODFILE CHECKSUM: ce1c4f957a8e21bdef0c93d4076730e1877505dd
+
+COCOAPODS: 1.1.1

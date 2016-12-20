@@ -1,0 +1,6 @@
+use_frameworks!
+target 'JLImagePicker_Tests' do
+  pod 'JLImagePicker', :path => '../'
+  
+  
+end

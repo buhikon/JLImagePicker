@@ -1,0 +1,6 @@
+framework module JLImagePicker {
+  umbrella header "JLImagePicker-umbrella.h"
+
+  export *
+  module * { export * }
+}
