@@ -20,6 +20,26 @@ it, simply add the following line to your Podfile:
 pod "JLImagePicker"
 ```
 
+## Usage
+```
+[JLImagePicker takePhotoOnViewController:self.viewController
+                                  camera:JLImagePickerCameraFront
+                           allowsEditing:YES
+                              completion:^(BOOL success, UIImage *image, AVAuthorizationStatus authStatus) {
+                                  if(success) {
+                                      // do something with the image
+                                  }
+                                  else {
+                                      if(authStatus == AVAuthorizationStatusRestricted) {
+                                          // alert
+                                      }
+                                      else if(authStatus == AVAuthorizationStatusDenied) {
+                                          // alert + go to Settings app
+                                      }
+                                  }
+                              }];
+```
+
 ## Author
 
 Joey Lee, slarinz@gmail.com
