@@ -1,6 +1,6 @@
 //
 //  JLImagePicker.m
-//  Version 0.1.1
+//  Version 0.1.2
 //
 //  Created by Joey L. on Aug/11/16.
 //  Copyright © 2016 Joey L. All rights reserved.
@@ -72,24 +72,18 @@ static JLImagePicker *instance = nil;
     
     if(authStatus == AVAuthorizationStatusAuthorized) {
         block(YES, authStatus);
-    } else if(authStatus == AVAuthorizationStatusDenied){
+    } else if(authStatus == AVAuthorizationStatusDenied) {
         block(NO, authStatus);
-    } else if(authStatus == AVAuthorizationStatusRestricted){
+    } else if(authStatus == AVAuthorizationStatusRestricted) {
         block(NO, authStatus);
-    } else if(authStatus == AVAuthorizationStatusNotDetermined){
-        if ([UIImagePickerController isSourceTypeAvailable: UIImagePickerControllerSourceTypeCamera]) {
-            [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    AVAuthorizationStatus authStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
-                    self.cameraStatus = authStatus;
-                    block(granted, authStatus);
-                });
-            }];
-        }
-        else {
-            // no cameras detected (e.g. simulator)
-            block(NO, authStatus);
-        }
+    } else if(authStatus == AVAuthorizationStatusNotDetermined) {
+        [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                AVAuthorizationStatus authStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
+                self.cameraStatus = authStatus;
+                block(granted, authStatus);
+            });
+        }];
     } else {
         block(NO, authStatus);
     }
@@ -132,13 +126,20 @@ static JLImagePicker *instance = nil;
     [self requestCameraPermissions:^(BOOL granted, AVAuthorizationStatus status) {
         if(granted) {
             self.cameraCompletion = completion;
-            
-            UIImagePickerController *imagePickerController = [[UIImagePickerController alloc] init];
-            imagePickerController.sourceType = UIImagePickerControllerSourceTypeCamera;
-            imagePickerController.delegate = self;
-            imagePickerController.allowsEditing = allowsEditing;
-            imagePickerController.cameraDevice = (camera == JLImagePickerCameraFront) ? UIImagePickerControllerCameraDeviceFront : UIImagePickerControllerCameraDeviceRear;
-            [viewController presentViewController:imagePickerController animated:YES completion:nil];
+            if ([UIImagePickerController isSourceTypeAvailable: UIImagePickerControllerSourceTypeCamera]) {
+                UIImagePickerController *imagePickerController = [[UIImagePickerController alloc] init];
+                imagePickerController.sourceType = UIImagePickerControllerSourceTypeCamera;
+                imagePickerController.delegate = self;
+                imagePickerController.allowsEditing = allowsEditing;
+                imagePickerController.cameraDevice = (camera == JLImagePickerCameraFront) ? UIImagePickerControllerCameraDeviceFront : UIImagePickerControllerCameraDeviceRear;
+                [viewController presentViewController:imagePickerController animated:YES completion:nil];
+            }
+            else {
+                // no cameras detected (e.g. simulator)
+                if(completion) {
+                    completion(NO, nil, status);
+                }
+            }
         }
         else {
             if(completion) {
@@ -174,7 +175,7 @@ static JLImagePicker *instance = nil;
 #pragma mark - UIImagePickerControllerDelegate
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info {
-
+    
     UIImage *image = [info valueForKey:UIImagePickerControllerEditedImage];
     if(!image) {
         image = [info valueForKey:UIImagePickerControllerOriginalImage];
@@ -209,3 +210,4 @@ static JLImagePicker *instance = nil;
 
 
 @end
+
