@@ -1,7 +1,7 @@
 //
 //  JLImagePicker.h
 //
-//  Version 0.1.0
+//  Version 0.1.1
 //
 //  Created by Joey L. on Aug/11/16.
 //  Copyright © 2016 Joey L. All rights reserved.

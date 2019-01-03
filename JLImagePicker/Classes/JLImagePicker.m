@@ -1,6 +1,6 @@
 //
 //  JLImagePicker.m
-//  Version 0.1.0
+//  Version 0.1.1
 //
 //  Created by Joey L. on Aug/11/16.
 //  Copyright © 2016 Joey L. All rights reserved.
@@ -77,13 +77,19 @@ static JLImagePicker *instance = nil;
     } else if(authStatus == AVAuthorizationStatusRestricted){
         block(NO, authStatus);
     } else if(authStatus == AVAuthorizationStatusNotDetermined){
-        [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                AVAuthorizationStatus authStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
-                self.cameraStatus = authStatus;
-                block(granted, authStatus);
-            });
-        }];
+        if ([UIImagePickerController isSourceTypeAvailable: UIImagePickerControllerSourceTypeCamera]) {
+            [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    AVAuthorizationStatus authStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
+                    self.cameraStatus = authStatus;
+                    block(granted, authStatus);
+                });
+            }];
+        }
+        else {
+            // no cameras detected (e.g. simulator)
+            block(NO, authStatus);
+        }
     } else {
         block(NO, authStatus);
     }
@@ -167,11 +173,6 @@ static JLImagePicker *instance = nil;
 
 #pragma mark - UIImagePickerControllerDelegate
 
-- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingImage:(UIImage *)image editingInfo:(nullable NSDictionary<NSString *,id> *)editingInfo {
-    
-    NSLog(@"%@::%@", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
-    
-}
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info {
 
     UIImage *image = [info valueForKey:UIImagePickerControllerEditedImage];
