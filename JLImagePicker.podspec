@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'JLImagePicker'
-  s.version          = '0.1.2'
+  s.version          = '0.1.3'
   s.summary          = 'A simple image picker from camera or album.'
 
 # This description is used to generate tags and improve search results.
