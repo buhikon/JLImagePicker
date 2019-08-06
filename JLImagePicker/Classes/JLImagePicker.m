@@ -125,8 +125,8 @@ static JLImagePicker *instance = nil;
     
     [self requestCameraPermissions:^(BOOL granted, AVAuthorizationStatus status) {
         if(granted) {
-            self.cameraCompletion = completion;
             if ([UIImagePickerController isSourceTypeAvailable: UIImagePickerControllerSourceTypeCamera]) {
+                self.cameraCompletion = completion;
                 UIImagePickerController *imagePickerController = [[UIImagePickerController alloc] init];
                 imagePickerController.sourceType = UIImagePickerControllerSourceTypeCamera;
                 imagePickerController.delegate = self;
